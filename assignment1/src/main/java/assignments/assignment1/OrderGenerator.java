@@ -30,13 +30,7 @@ public class OrderGenerator {
         System.out.println("3. Keluar");
     }
 
-    /*
-     * Method ini digunakan untuk membuat ID
-     * dari nama restoran, tanggal order, dan nomor telepon
-     * 
-     * @return String Order ID dengan format sesuai pada dokumen soal
-     */
-    public static String generateOrderID(String namaRestoran, String tanggalID, int digitTelepon) {
+    public static String generateOrderID(String namaRestoran, String tanggalID, String noTelepon) {
         // TODO:Lengkapi method ini sehingga dapat mengenerate Order ID sesuai ketentuan
         String orderID = "";
         boolean isInt = false;
@@ -44,7 +38,7 @@ public class OrderGenerator {
         int checkSum1 = 0;
         int checkSum2 = 0;
 
-        orderID = namaRestoran.substring(0,4).toUpperCase() + tanggalID + digitTelepon;
+        orderID = namaRestoran.substring(0,4).toUpperCase() + tanggalID + noTelepon;
 
         for (char character : orderID.toCharArray()) {
             try {
@@ -70,13 +64,8 @@ public class OrderGenerator {
             index += 1;
         }
 
-        System.out.println(checkSum1);
-        System.out.println(checkSum2);
-
         checkSum1 %= 36;
         checkSum2 %= 36;
-        System.out.println((char)checkSum1);
-        System.out.println(checkSum2);
 
         if(checkSum1 >= 10){
             orderID += (char)(checkSum1 + 55); 
@@ -113,9 +102,8 @@ public class OrderGenerator {
         // TODO: Implementasikan program sesuai ketentuan yang diberikan
         String namaRestoran;
         String tanggalOrder;
-        String noTelepon;
         String tanggalID = "";
-        int digitTelepon = 0;
+        String noTelepon;
 
         showMenu();
         System.out.print("Pilihan Menu: ");
@@ -167,16 +155,15 @@ public class OrderGenerator {
                     if(isInt == false){
                         System.out.println("Harap masukkan nomor telepon dalam bentuk bilangan bulat positif.");
                     } else if (isInt == true){
-                        digitTelepon += noTeleponCalculation(noTelepon);
+                        noTelepon = Integer.toString(noTeleponCalculation(noTelepon));
                     }
                 } while (isInt == false);
                 
-                generateOrderID(namaRestoran, tanggalID, digitTelepon);
+                generateOrderID(namaRestoran, tanggalID, noTelepon);
 
             default:
                 break;
         }
-
         }
 
     public static int noTeleponCalculation(String noTelepon){
