@@ -1,8 +1,11 @@
 package assignments.assignment1;
 
+// import java.sql.Date;
 // import java.time.LocalDate;
 // import java.time.format.DateTimeFormatter;
+import java.text.*;
 import java.util.Scanner;
+import java.util.Date;
 
 public class OrderGenerator {
     private static final Scanner input = new Scanner(System.in);
@@ -31,7 +34,6 @@ public class OrderGenerator {
     }
 
     public static String generateOrderID(String namaRestoran, String tanggalID, String noTelepon) {
-        // TODO:Lengkapi method ini sehingga dapat mengenerate Order ID sesuai ketentuan
         String orderID = "";
         boolean isInt = false;
         int index = 0;
@@ -99,11 +101,15 @@ public class OrderGenerator {
     }
 
     public static void main(String[] args) {
-        // TODO: Implementasikan program sesuai ketentuan yang diberikan
         String namaRestoran;
         String tanggalOrder;
-        String tanggalID = "";
+        // String tanggalID = "";
         String noTelepon;
+        
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("ddMMyyyy");
+
+        boolean isDateValid = false;
 
         showMenu();
         System.out.print("Pilihan Menu: ");
@@ -120,26 +126,21 @@ public class OrderGenerator {
                         System.out.println("Nama restoran tidak valid!");
                     }
                 } while (namaRestoran.length() < 4);
+
                 do {
                     System.out.print("Tanggal Pemesanan: ");
                     tanggalOrder = input.nextLine();
-                    String tanggal = tanggalOrder.substring(0, 2);
-                    String bulan = tanggalOrder.substring(3, 5);
-                    String tahun = tanggalOrder.substring(6);
-                    String[] arrayTanggal = {tanggal, bulan, tahun};
-                    for (String element : arrayTanggal) {
-                        try {
-                            Integer.parseInt(element);
-                            isInt = true;
-                            tanggalID = tanggal + bulan + tahun;
-                           } catch (NumberFormatException e) {
-                            isInt = false;
-                           }    
-                    }
-                    if(isInt == false || tanggalOrder.length() != 10){
+                    
+                    try {
+                        Date date = inputFormat.parse(tanggalOrder);
+                        tanggalOrder = outputFormat.format(date);
+                        isDateValid = true;
+                    } catch (ParseException e) {
+                        // Date parsing failed, print error message
                         System.out.println("Tanggal pemesanan dalam format DD/MM/YYYY!");
                     }
-                } while(isInt == false || tanggalOrder.length() != 10);
+                    } while (!isDateValid);
+
                 do {
                     System.out.print("No. Telepon: ");
                     noTelepon = input.nextLine();
@@ -159,7 +160,7 @@ public class OrderGenerator {
                     }
                 } while (isInt == false);
                 
-                generateOrderID(namaRestoran, tanggalID, noTelepon);
+                generateOrderID(namaRestoran, tanggalOrder, noTelepon);
 
             default:
                 break;
