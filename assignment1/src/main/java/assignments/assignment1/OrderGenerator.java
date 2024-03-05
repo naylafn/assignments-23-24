@@ -52,7 +52,7 @@ public class OrderGenerator {
         }
 
         // Prompt output Bill
-        bill = "\nBill:\n" + 
+        bill = "Bill:\n" + 
         "Order ID: " + OrderID +
         "\nTanggal Pemesanan: " + OrderID.substring(4, 6) + "/" + OrderID.substring(6,8) + "/" + OrderID.substring(8, 12) +
         "\nLokasi Pengiriman: " + lokasi.toUpperCase() +
