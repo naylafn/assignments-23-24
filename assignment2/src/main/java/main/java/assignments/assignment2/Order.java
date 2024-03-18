@@ -8,13 +8,14 @@ public class Order {
     private int biayaOngkosKirim;
     private Restaurant restaurant;
     private ArrayList<Menu> items;
-    boolean orderFinished;
+    private boolean orderFinished;
 
-    public Order(String orderId, String tanggal, int ongkir, Restaurant resto, ArrayList<Menu> items){
+    public Order(String orderId, String tanggal, int ongkir, Restaurant resto, boolean orderFinished, ArrayList<Menu> items){
         this.orderID = orderId;
         this.tanggalPemesanan = tanggal;
         this.biayaOngkosKirim = ongkir;
         this.restaurant = resto;
+        this.orderFinished = orderFinished;
         this.items = new ArrayList<>();
     }
     
@@ -38,6 +39,12 @@ public class Order {
     }
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+    public boolean getOrderFinished(){
+        return orderFinished;
+    }
+    public void setOrderFinished(boolean orderFinished) {
+        this.orderFinished = orderFinished;
     }
     public Restaurant getRestaurant() {
         return restaurant;

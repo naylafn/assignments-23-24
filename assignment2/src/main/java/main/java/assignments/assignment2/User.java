@@ -8,7 +8,7 @@ public class User {
     private String email;
     private String lokasi;
     private String role;
-    private ArrayList[] orderHistory;
+    private ArrayList<Order> orderHistory = new ArrayList<>();
 
     public User(String nama, String nomorTelepon, String email, String lokasi, String role){
         this.nama = nama;
@@ -38,9 +38,9 @@ public class User {
         this.lokasi = lokasi;
     }public String getLokasi() {
         return lokasi;
-    }public void setOrderHistory(ArrayList[] orderHistory) {
+    }public void setOrderHistory(ArrayList<Order> orderHistory) {
         this.orderHistory = orderHistory;
-    }public ArrayList[] getOrderHistory() {
+    }public ArrayList<Order> getOrderHistory() {
         return orderHistory;
     }public void setRole(String role) {
         this.role = role;

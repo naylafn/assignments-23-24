@@ -1,12 +1,11 @@
 package assignments.assignment1;
-
 import java.util.Scanner;
 
 public class OrderGenerator {
     private static final Scanner input = new Scanner(System.in);
 
     public static void showMenu(){
-        System.out.println(">>=======================================<<");
+        System.out.println("\n>>=======================================<<");
         System.out.println("|| ___                 ___             _ ||");
         System.out.println("||| . \\ ___  ___  ___ | __>___  ___  _| |||");
         System.out.println("||| | |/ ._>| . \\/ ._>| _>/ . \\/ . \\/ . |||");
@@ -63,6 +62,73 @@ public class OrderGenerator {
         return bill;
     }
 
+        // Method mencari 2 digit untuk order ID dari nomor telepon
+        public static String noTeleponCalculation(String noTelepon){
+            int jumlah = 0;
+            String result = "";
+            for (char digit :noTelepon.toCharArray()) {
+                jumlah += (int) digit - '0';    // Kurangi dengan '0' untuk convert ASCII character ke numeric
+            }
+            jumlah %= 100;
+            if(jumlah < 10){    // Jika hasil jumlah satuan tambah kosong di depan
+                result += "0" + jumlah;
+            } else {
+                result += jumlah;
+            }
+            return result;
+        }
+    
+        // Method menghitung 2 digit checksum
+        public static String checkSumCalculation(String orderID){
+            boolean isInt = false;
+            int index = 0;
+            int checkSum1 = 0;  // Genap
+            int checkSum2 = 0;  // Ganjil
+            String checkSum = "";
+            orderID = orderID.substring(0, 14); // Yang dicek adalah 14 digit pertama
+    
+            for (char character : orderID.toCharArray()) {  // Iterasi dan cek masing-masing digit
+                try {   // Mencari tahu apakah digit tersebut integer
+                    Integer.parseInt(Character.toString(character));
+                    isInt = true;
+                } catch (NumberFormatException e){
+                    isInt = false;
+                }
+    
+                // Checksum bilangan dengan index genap
+                if(index % 2 == 0){
+                    if(isInt == true){  // Jika integer ASCII value dikurangi dengan value '0' atau 48
+                        checkSum1 += (int) character - '0';
+                    } else if(isInt == false){  // Jika huruf ASCII value dikurangi 55
+                        checkSum1 += (int) character - 55;
+                    }
+                // Checksum bilangan dengan index ganjil
+                } else if (index % 2 == 1){
+                    if(isInt == true){
+                        checkSum2 += (int) character - '0';
+                    } else if(isInt == false){
+                        checkSum2 += (int) character - 55;
+                    }
+                }
+                index += 1; // Index counter
+            }
+    
+            checkSum1 %= 36;
+            checkSum2 %= 36;
+    
+            if(checkSum1 >= 10){    // Jika checksum >= 10, maka convert ke character huruf 
+                checkSum += (char)(checkSum1 + 55); 
+                checkSum += checkSum2;
+            } else if(checkSum2 >= 10){
+                checkSum += checkSum1; 
+                checkSum += (char)(checkSum2 + 55);
+            } else{
+                checkSum += (char)checkSum1 + (char)checkSum2;
+            }
+            return checkSum;
+    
+        }
+    
     public static void main(String[] args) {
         String namaRestoran;
         String tanggalOrder = "";
@@ -94,7 +160,7 @@ public class OrderGenerator {
                         System.out.println("Tanggal pemesanan dalam format DD/MM/YYYY!");
                         continue;
                     }
-                    // Memisaj tanggal, bulan, tahun untuk cek apakah bertipe integer
+                    // Memisah tanggal, bulan, tahun untuk cek apakah bertipe integer
                     String tanggal = tanggalOrder.substring(0, 2);
                     String bulan = tanggalOrder.substring(3, 5);
                     String tahun = tanggalOrder.substring(6);
@@ -147,7 +213,7 @@ public class OrderGenerator {
                     // Validasi input order ID
                     if(orderID.length() < 16){
                         isValid = false;
-                        System.out.println("Order ID 16 karakter");
+                        System.out.println("Order ID minimal 16 karakter");
                         continue;
                     }else if(!checkSumCalculation(orderID.substring(0, 14)).equals(orderID.substring(14))){ // Validasi checksum
                         isValid = false;
@@ -183,72 +249,5 @@ public class OrderGenerator {
                 }
             }
         }
-        
-    // Method mencari 2 digit untuk order ID dari nomor telepon
-    public static String noTeleponCalculation(String noTelepon){
-        int jumlah = 0;
-        String result = "";
-        for (char digit :noTelepon.toCharArray()) {
-            jumlah += (int) digit - '0';    // Kurangi dengan '0' untuk convert ASCII character ke numeric
-        }
-        jumlah %= 100;
-        if(jumlah < 10){    // Jika hasil jumlah satuan tambah kosong di depan
-            result += "0" + jumlah;
-        } else {
-            result += jumlah;
-        }
-        return result;
-    }
-
-    // Method menghitung 2 digit checksum
-    public static String checkSumCalculation(String orderID){
-        boolean isInt = false;
-        int index = 0;
-        int checkSum1 = 0;  // Genap
-        int checkSum2 = 0;  // Ganjil
-        String checkSum = "";
-        orderID = orderID.substring(0, 14); // Yang dicek adalah 14 digit pertama
-
-        for (char character : orderID.toCharArray()) {  // Iterasi dan cek masing-masing digit
-            try {   // Mencari tahu apakah digit tersebut integer
-                Integer.parseInt(Character.toString(character));
-                isInt = true;
-            } catch (NumberFormatException e){
-                isInt = false;
-            }
-
-            // Checksum bilangan dengan index genap
-            if(index % 2 == 0){
-                if(isInt == true){  // Jika integer ASCII value dikurangi dengan value '0' atau 48
-                    checkSum1 += (int) character - '0';
-                } else if(isInt == false){  // Jika huruf ASCII value dikurangi 55
-                    checkSum1 += (int) character - 55;
-                }
-                // Checksum bilangan dengan index ganjil
-            } else if (index % 2 == 1){
-                if(isInt == true){
-                    checkSum2 += (int) character - '0';
-                } else if(isInt == false){
-                    checkSum2 += (int) character - 55;
-                }
-            }
-            index += 1; // Index counter
-        }
-
-        checkSum1 %= 36;
-        checkSum2 %= 36;
-
-        if(checkSum1 >= 10){    // Jika checksum >= 10, maka convert ke character huruf 
-            checkSum += (char)(checkSum1 + 55); 
-            checkSum += checkSum2;
-        } else if(checkSum2 >= 10){
-            checkSum += checkSum1; 
-            checkSum += (char)(checkSum2 + 55);
-        } else{
-            checkSum += (char)checkSum1 + (char)checkSum2;
-        }
-        return checkSum;
-
-    }
-        
+                
     }
