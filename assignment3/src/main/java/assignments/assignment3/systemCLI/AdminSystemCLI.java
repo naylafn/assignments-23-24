@@ -1,11 +1,12 @@
 package assignments.assignment3.systemCLI;
 
 import java.util.Scanner;
+import assignments.assignment2.MainMenu;
 
 public class AdminSystemCLI extends UserSystemCLI{
 
-    @override
-    boolean handleMenu(int command){
+    @Override
+    public boolean handleMenu(int command){
         switch(command){
             case 1 -> handleTambahRestoran();
             case 2 -> handleHapusRestoran();
@@ -15,8 +16,8 @@ public class AdminSystemCLI extends UserSystemCLI{
         return true;
     }
 
-    @override
-    void displayMenu() {
+    @Override
+    public void displayMenu() {
         System.out.println("\n--------------------------------------------");
         System.out.println("Pilih menu:");
         System.out.println("1. Tambah Restoran");
@@ -27,11 +28,10 @@ public class AdminSystemCLI extends UserSystemCLI{
     }
 
     protected void handleTambahRestoran(){
-        
-        // TODO: Implementasi method untuk handle ketika admin ingin tambah restoran
+        MainMenu.handleTambahRestoran();
     }
 
     protected void handleHapusRestoran(){
-        // TODO: Implementasi method untuk handle ketika admin ingin tambah restoran
+        MainMenu.handleHapusRestoran();
     }
 }

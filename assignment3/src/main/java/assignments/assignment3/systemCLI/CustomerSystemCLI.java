@@ -1,11 +1,13 @@
 package assignments.assignment3.systemCLI;
 
 import java.util.Scanner;
+import assignments.assignment2.MainMenu;
+import assignments.assignment3.User;
 
 public class CustomerSystemCLI extends UserSystemCLI{
-
-    //TODO: Tambahkan modifier dan buatlah metode ini mengoverride dari Abstract class
-    boolean handleMenu(int choice){
+    @Override
+    public boolean handleMenu(int choice){
+        
         switch(choice){
             case 1 -> handleBuatPesanan();
             case 2 -> handleCetakBill();
@@ -20,8 +22,8 @@ public class CustomerSystemCLI extends UserSystemCLI{
         return true;
     }
 
-    //TODO: Tambahkan modifier dan buatlah metode ini mengoverride dari Abstract class
-    void displayMenu() {
+    @Override
+    public void displayMenu() {
         System.out.println("\n--------------------------------------------");
         System.out.println("Pilih menu:");
         System.out.println("1. Buat Pesanan");
@@ -35,15 +37,15 @@ public class CustomerSystemCLI extends UserSystemCLI{
     }
 
     void handleBuatPesanan(){
-        // TODO: Implementasi method untuk handle ketika customer membuat pesanan
+        MainMenu.handleBuatPesanan();
     }
 
     void handleCetakBill(){
-        // TODO: Implementasi method untuk handle ketika customer ingin cetak bill
+        MainMenu.handleCetakBill();
     }
 
     void handleLihatMenu(){
-        // TODO: Implementasi method untuk handle ketika customer ingin melihat menu
+        MainMenu.handleLihatMenu();
     }
 
     void handleBayarBill(){
@@ -51,7 +53,7 @@ public class CustomerSystemCLI extends UserSystemCLI{
     }
 
     void handleUpdateStatusPesanan(){
-        // TODO: Implementasi method untuk handle ketika customer ingin update status pesanan
+        MainMenu.handleUpdateStatusPesanan();
     }
 
     void handleCekSaldo(){

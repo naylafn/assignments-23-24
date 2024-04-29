@@ -1,11 +1,13 @@
 package assignments.assignment3.systemCLI;
 
 import java.util.Scanner;
+import assignments.assignment3.User;
 
 public abstract class UserSystemCLI {
     protected Scanner input;
     public void run() {
         boolean isLoggedIn = true;
+        System.out.println("OALAH JANCUK");
         while (isLoggedIn) {
             displayMenu();
             int command = input.nextInt();
@@ -13,6 +15,6 @@ public abstract class UserSystemCLI {
             isLoggedIn = handleMenu(command);
         }
     }
-    abstract void displayMenu();
-    abstract boolean handleMenu(int command);
+    public abstract void displayMenu();
+    public abstract boolean handleMenu(int command);
 }

@@ -5,12 +5,13 @@ import java.util.Scanner;
 
 import assignments.assignment2.OrderGenerator;
 import assignments.assignment2.Restaurant;
-import assignments.assignment2.User;
-import assignments.assignment3.LoginManager
+import assignments.assignment3.User;
+import assignments.assignment3.LoginManager;
 import assignments.assignment3.payment.CreditCardPayment;
 import assignments.assignment3.payment.DebitPayment;
 import assignments.assignment3.systemCLI.AdminSystemCLI;
 import assignments.assignment3.systemCLI.CustomerSystemCLI;
+import assignments.assignment3.systemCLI.UserSystemCLI;
 
 public class MainMenu {
     private final Scanner input;
@@ -46,20 +47,66 @@ public class MainMenu {
     }
 
     private void login(){
+        String nama;
+        String noTelp;
+        User userLoggedIn = null;
+        initUser();
         do{
             System.out.println("\nSilakan Login:");
             System.out.print("Nama: ");
-            String nama = input.nextLine();
+            nama = input.nextLine();
             System.out.print("Nomor Telepon: ");
+            noTelp = input.nextLine();
 
-        }while();
-        String noTelp = input.nextLine();
+            if(!OrderGenerator.validatePhoneNumber(noTelp)){
+                System.out.println("Nomor telepon tidak valid. Mohon masukkan nomor telepon dengan benar.");
+                continue;
+            }
 
-        // TODO: Validasi input login
+            for(User user : userList){
+                if((user.getNama().trim()).equalsIgnoreCase(nama.trim()) && (user.getNomorTelepon().trim()).equals(noTelp.trim())){
+                    userLoggedIn = user;
+                    System.out.println("Selamat Datang " + nama + "!\n");
+                    break;
+                }
+            }
 
-        User userLoggedIn; // TODO: lengkapi
+            if(userLoggedIn == null){
+                System.out.println("Pengguna tidak ditemukan.\n");
+                continue;
+            }
+        }while(!OrderGenerator.validatePhoneNumber(noTelp) && (userLoggedIn == null));
 
-        loginManager.getSystem(userLoggedIn.role);
+        UserSystemCLI system = loginManager.getSystem(userLoggedIn.role);
+        if(system instanceof CustomerSystemCLI){
+            customerSystem(userLoggedIn, system);
+        } else {
+            adminSystem(userLoggedIn, system);
+        }
+    }
+
+    private void customerSystem(User userLoggedIn, UserSystemCLI system){
+        system.displayMenu();
+        int choice = input.nextInt();
+        system.handleMenu(choice);
+    }
+
+    private void adminSystem(User user, UserSystemCLI system) {
+        system.displayMenu();
+        int choice = input.nextInt();
+        system.handleMenu(choice);
+    }
+
+    public static User getUser(String nama, String nomorTelepon){
+        User validUser = null;
+        for (User user : userList) {
+            // Mencari user yang valid sesuai nama dan nomor telepon yang diberikan
+            if(nama.trim().equalsIgnoreCase(user.getNama().trim()) && nomorTelepon.trim().equals(user.getNomorTelepon().trim())){
+                validUser = user; 
+                break;
+            }
+        }
+        return validUser;   // Mengembalikan object User yang valid
     }
 
     private static void printHeader(){
@@ -85,7 +132,6 @@ public class MainMenu {
     public static void initUser(){
         userList = new ArrayList<User>();
 
-        //TODO: Adjust constructor dan atribut pada class User di Assignment 2
         userList.add(new User("Thomas N", "9928765403", "thomas.n@gmail.com", "P", "Customer", new DebitPayment(), 500000));
         userList.add(new User("Sekar Andita", "089877658190", "dita.sekar@gmail.com", "B", "Customer", new CreditCardPayment(), 2000000));
         userList.add(new User("Sofita Yasusa", "084789607222", "sofita.susa@gmail.com", "T", "Customer", new DebitPayment(), 750000));

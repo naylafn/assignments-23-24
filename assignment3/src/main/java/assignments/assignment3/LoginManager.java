@@ -13,12 +13,13 @@ public class LoginManager {
         this.customerSystem = customerSystem;
     }
 
-    //TODO: Solve the error :) (It's actually easy if you have done the other TODOs)
     public UserSystemCLI getSystem(String role){
         if(role == "Customer"){
-            return adminSystem;
-        }else{
+            System.out.println("Halo Customer jancuk");
             return customerSystem;
+        }else{
+            System.out.println("Halo admin jancuk");
+            return adminSystem;
         }
     }
 }
