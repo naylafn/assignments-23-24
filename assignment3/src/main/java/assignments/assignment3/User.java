@@ -37,11 +37,23 @@ public class User {
     public String getNomorTelepon() {
         return nomorTelepon;
     }
+    public DepeFoodPaymentSystem getPayment() {
+        return payment;
+    }
+    public long getSaldo() {
+        return saldo;
+    }
+    public void setSaldo(long saldo) {
+        this.saldo = saldo;
+    }
     public void addOrderHistory(Order order){
         orderHistory.add(order);
     }
     public ArrayList<Order> getOrderHistory() {
         return orderHistory;
+    }
+    public void setOrderHistory(ArrayList<Order> orderHistory) {
+    this.orderHistory = orderHistory;
     }
     public boolean isOrderBelongsToUser(String orderId) {
         for (Order order : orderHistory) {
@@ -51,6 +63,8 @@ public class User {
         }
         return false;
     }
+
+
     @Override
     public String toString() {
         // TODO Auto-generated method stub

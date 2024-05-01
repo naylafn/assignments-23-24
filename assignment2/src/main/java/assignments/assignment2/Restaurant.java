@@ -7,10 +7,9 @@ import java.util.Arrays;
 
 public class Restaurant {
     private String nama;
-    private ArrayList<Menu> menu;
+    private ArrayList<Menu> menu = new ArrayList<>();
     public Restaurant(String nama){
         this.nama = nama;
-        this.menu = new ArrayList<>();
     }
     
     public String getNama() {
@@ -41,6 +40,7 @@ public class Restaurant {
         }
         return new ArrayList<>(Arrays.asList(menuArr));
     }
+
     public String printMenu() {
         StringBuilder menuString = new StringBuilder("Menu:\n");
         DecimalFormat decimalFormat = new DecimalFormat();

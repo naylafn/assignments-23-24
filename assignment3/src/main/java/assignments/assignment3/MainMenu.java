@@ -1,10 +1,13 @@
 package assignments.assignment3;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.ArrayList;
+import java.text.*;
 import java.util.Scanner;
 
-import assignments.assignment2.OrderGenerator;
-import assignments.assignment2.Restaurant;
+// import assignments.assignment2.OrderGenerator;
+import assignments.assignment2.*;
 import assignments.assignment3.User;
 import assignments.assignment3.LoginManager;
 import assignments.assignment3.payment.CreditCardPayment;
@@ -16,8 +19,22 @@ import assignments.assignment3.systemCLI.UserSystemCLI;
 public class MainMenu {
     private final Scanner input;
     private final LoginManager loginManager;
-    private static ArrayList<Restaurant> restoList;
+    private static ArrayList<Restaurant> restoList = new ArrayList<>();
     private static ArrayList<User> userList;
+    private static User userLoggedIn;
+
+    public static ArrayList<Restaurant> getRestoList() {
+        return restoList;
+    }
+    public static void setRestoList(ArrayList<Restaurant> restoList) {
+        MainMenu.restoList = restoList;
+    }
+    public static User getUserLoggedIn() {
+        return userLoggedIn;
+    }
+    public static ArrayList<User> getUserList() {
+        return userList;
+    }
 
     public MainMenu(Scanner in, LoginManager loginManager) {
         this.input = in;
@@ -49,7 +66,6 @@ public class MainMenu {
     private void login(){
         String nama;
         String noTelp;
-        User userLoggedIn = null;
         initUser();
         do{
             System.out.println("\nSilakan Login:");
@@ -63,50 +79,24 @@ public class MainMenu {
                 continue;
             }
 
-            for(User user : userList){
-                if((user.getNama().trim()).equalsIgnoreCase(nama.trim()) && (user.getNomorTelepon().trim()).equals(noTelp.trim())){
-                    userLoggedIn = user;
-                    System.out.println("Selamat Datang " + nama + "!\n");
-                    break;
-                }
-            }
+        }while(!OrderGenerator.validatePhoneNumber(noTelp));
 
-            if(userLoggedIn == null){
-                System.out.println("Pengguna tidak ditemukan.\n");
-                continue;
-            }
-        }while(!OrderGenerator.validatePhoneNumber(noTelp) && (userLoggedIn == null));
-
-        UserSystemCLI system = loginManager.getSystem(userLoggedIn.role);
-        if(system instanceof CustomerSystemCLI){
-            customerSystem(userLoggedIn, system);
-        } else {
-            adminSystem(userLoggedIn, system);
-        }
-    }
-
-    private void customerSystem(User userLoggedIn, UserSystemCLI system){
-        system.displayMenu();
-        int choice = input.nextInt();
-        system.handleMenu(choice);
-    }
-
-    private void adminSystem(User user, UserSystemCLI system) {
-        system.displayMenu();
-        int choice = input.nextInt();
-        system.handleMenu(choice);
-    }
-
-    public static User getUser(String nama, String nomorTelepon){
-        User validUser = null;
-        for (User user : userList) {
-            // Mencari user yang valid sesuai nama dan nomor telepon yang diberikan
-            if(nama.trim().equalsIgnoreCase(user.getNama().trim()) && nomorTelepon.trim().equals(user.getNomorTelepon().trim())){
-                validUser = user; 
+        for(User user : userList){
+            if((user.getNama().trim()).equalsIgnoreCase(nama.trim()) && (user.getNomorTelepon().trim()).equals(noTelp.trim())){
+                userLoggedIn = user;
+                System.out.println("Selamat Datang " + userLoggedIn.getNama() + "!\n");
+                System.out.println("YANG BENER AJA LUH");
                 break;
             }
         }
-        return validUser;   // Mengembalikan object User yang valid
+
+        if(userLoggedIn == null){
+            System.out.println("Pengguna tidak dapat ditemukan.\n");
+            return;
+        }
+
+        UserSystemCLI system = loginManager.getSystem(userLoggedIn.role);
+        system.run();
     }
 
     private static void printHeader(){
@@ -115,7 +105,7 @@ public class MainMenu {
         System.out.println("||| . \\ ___  ___  ___ | __>___  ___  _| |||");
         System.out.println("||| | |/ ._>| . \\/ ._>| _>/ . \\/ . \\/ . |||");
         System.out.println("|||___/\\___.|  _/\\___.|_| \\___/\\___/\\___|||");
-        System.out.println("||          |_|                          ||");
+        System.out.println("||           |_|                          ||");
         System.out.println(">>=======================================<<");
     }
 
@@ -141,4 +131,94 @@ public class MainMenu {
         userList.add(new User("Admin", "123456789", "admin@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
         userList.add(new User("Admin Baik", "9123912308", "admin.b@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
     }
+
+    // Methods from MainMenu assignment2 (Solusi TP2)
+    public static Restaurant handleTambahMenuRestaurant(Restaurant restoran){
+        Scanner input = new Scanner(System.in);
+        System.out.print("Jumlah Makanan: ");
+        int  jumlahMenu = Integer.parseInt(input.nextLine().trim());
+        boolean isMenuValid = true;
+        for(int i = 0; i < jumlahMenu; i++){
+            String inputValue = input.nextLine().trim();
+            String[] splitter = inputValue.split(" ");
+            String hargaStr = splitter[splitter.length-1];
+            boolean isDigit = MainMenu.checkIsDigit(hargaStr);
+            String namaMenu = String.join(" ", Arrays.copyOfRange(splitter, 0, splitter.length - 1));
+            if(isDigit){
+                int hargaMenu = Integer.parseInt(hargaStr);
+                restoran.addMenu(new Menu(namaMenu, hargaMenu));
+            }
+            else{
+                isMenuValid = false;
+            }
+        }
+        if(!isMenuValid){
+            System.out.println("Harga menu harus bilangan bulat!");
+            System.out.println();
+        }
+
+        return isMenuValid? restoran : null; 
+    }
+
+    public static boolean validateRequestPesanan(Restaurant restaurant, List<String> listMenuPesananRequest){
+        return listMenuPesananRequest.stream().allMatch(pesanan -> 
+            restaurant.getMenu().stream().anyMatch(menu -> menu.getNamaMakanan().equals(pesanan))
+        );
+    }
+
+    public static Menu[] getMenuRequest(Restaurant restaurant, List<String> listMenuPesananRequest){
+        Menu[] menu = new Menu[listMenuPesananRequest.size()];
+        for(int i=0;i<menu.length;i++){
+            for(Menu existMenu : restaurant.getMenu()){
+                if(existMenu.getNamaMakanan().equals(listMenuPesananRequest.get(i))){
+                    menu[i] = existMenu;
+                }
+            }
+        }
+        return menu;
+    }
+
+    public static String getMenuPesananOutput(Order order){
+        StringBuilder pesananBuilder = new StringBuilder();
+        DecimalFormat decimalFormat = new DecimalFormat();
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('\u0000');
+        decimalFormat.setDecimalFormatSymbols(symbols);
+        for (Menu menu : order.getSortedMenu()) {
+            pesananBuilder.append("- ").append(menu.getNamaMakanan()).append(" ").append(decimalFormat.format(menu.getHarga())).append("\n");
+        }
+        if (pesananBuilder.length() > 0) {
+            pesananBuilder.deleteCharAt(pesananBuilder.length() - 1);
+        }
+        return pesananBuilder.toString();
+    }
+
+    public static String outputBillPesanan(Order order) {
+        DecimalFormat decimalFormat = new DecimalFormat();
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+        decimalFormat.setDecimalFormatSymbols(symbols);
+        return String.format("Bill:%n" +
+                         "Order ID: %s%n" +
+                         "Tanggal Pemesanan: %s%n" +
+                         "Lokasi Pengiriman: %s%n" +
+                         "Status Pengiriman: %s%n"+
+                         "Pesanan:%n%s%n"+
+                         "Biaya Ongkos Kirim: Rp %s%n"+
+                         "Total Biaya: Rp %s%n",
+                         order.getOrderId(),
+                         order.getTanggal(),
+                         userLoggedIn.getLokasi(),
+                         !order.getOrderFinished()? "Not Finished":"Finished",
+                         getMenuPesananOutput(order),
+                         decimalFormat.format(order.getOngkir()),
+                         decimalFormat.format(order.getTotalHarga())
+                         );
+    }
+
+    public static boolean checkIsDigit(String digits){
+        return  digits.chars().allMatch(Character::isDigit);
+    }
+
+
 }

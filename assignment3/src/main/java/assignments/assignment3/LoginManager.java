@@ -15,10 +15,8 @@ public class LoginManager {
 
     public UserSystemCLI getSystem(String role){
         if(role == "Customer"){
-            System.out.println("Halo Customer jancuk");
             return customerSystem;
         }else{
-            System.out.println("Halo admin jancuk");
             return adminSystem;
         }
     }
