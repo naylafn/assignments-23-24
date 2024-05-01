@@ -2,12 +2,11 @@ package assignments.assignment3.systemCLI;
 
 import java.util.Scanner;
 
-import assignments.assignment2.MainMenu;
 import assignments.assignment3.User;
 
 public abstract class UserSystemCLI {
-    private static User userLoggedIn = assignments.assignment3.MainMenu.getUserLoggedIn();
-    protected Scanner input;
+    User userLoggedIn = assignments.assignment3.MainMenu.getUserLoggedIn();
+    Scanner input = new Scanner(System.in);
     public void run() {
         boolean isLoggedIn = true;
         while (isLoggedIn) {

@@ -1,6 +1,7 @@
 package assignments.assignment2;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 // import assignments.assignment1.*;
 
@@ -103,100 +104,50 @@ public class MainMenu {
     }
 
     public static void handleBuatPesanan(User validUser){
-        boolean isValid = false;
-        ArrayList<Menu> daftarMakanan;
-        ArrayList<Menu> orderedItems = new ArrayList<>();
-        String namaRestoran;
-        String tanggalOrder = "";
-        Restaurant rightRestaurant = null;
-
-        while(!isValid){
-            System.out.println("\n---------------Buat Pesanan---------------");
+        System.out.println("--------------Buat Pesanan----------------");
+        while (true) {
             System.out.print("Nama Restoran: ");
-            namaRestoran = input.nextLine();
-            // Validasi nama restoran dengan method validateRestaurantName dari kelas OrderGenerator
-            if (!OrderGenerator.validateRestaurantName(namaRestoran)) {
-                System.out.println("Nama Restoran tidak valid!\n");
-                continue;
-            }
-
-            boolean found = false;
-            rightRestaurant = null; // Reset rightRestaurant to null
-            // Iterasi tiap object Restaurant dalam restoList
-            for (Restaurant restaurant : restoList) {
-                // Mencari object Restaurant yang sesuai berdasarkan input namaRestoran
-                if(namaRestoran.trim().equalsIgnoreCase(restaurant.getNama())){
-                    found = true;
-                    rightRestaurant = restaurant;   // Masukkan object Restaurant yang sesuai ke variable
-                    break;
+            String restaurantName = input.nextLine().trim();
+            Restaurant restaurant = null;
+            for (Restaurant restaurantInList : restoList) {
+                if(restaurantName.equalsIgnoreCase(restaurantName)){
+                    restaurant = restaurantInList;
                 }
             }
-
-            if(!found){
-                System.out.println("Restoran tidak terdaftar dalam sistem.\n");
+            if(restaurant == null){
+                System.out.println("Restoran tidak terdaftar pada sistem.\n");
                 continue;
             }
-
-            System.out.print("Tanggal Pemesanan: ");
-            tanggalOrder = input.nextLine();
-
-            if (!OrderGenerator.validateDate(tanggalOrder)) {   // Method validateDate dari kelas OrderGenerator
-                System.out.println("Tanggal Pemesanan dalam format DD/MM/YYYY!\n");
+            System.out.print("Tanggal Pemesanan (DD/MM/YYYY): ");
+            String tanggalPemesanan = input.nextLine().trim();
+            if(!OrderGenerator.validateDate(tanggalPemesanan)){
+                System.out.println("Masukkan tanggal sesuai format (DD/MM/YYYY)");
+                System.out.println();
                 continue;
             }
-
             System.out.print("Jumlah Pesanan: ");
-            String jumlahOrder = input.nextLine();
-
-            // Cek input jumlahOrder integer
-            if(!jumlahOrder.chars().allMatch(Character::isDigit)){
-                System.out.println("Jumlah pesanan harus bilangan bulat.\n");
-                continue;
-            }
-
-            daftarMakanan = rightRestaurant.getMenu();  // daftarMakanan = menu restoran
-            String orderMakanan;
-
+            int jumlahPesanan = Integer.parseInt(input.nextLine().trim());
             System.out.println("Order: ");
-            boolean menuAvailable = false;
-            for(int i = 0; i < Integer.parseInt(jumlahOrder); i++){ // Iterasi sebanyak jumlahMakanan kali
-                orderMakanan = input.nextLine();
-                menuAvailable = false;
-                // Iterasi tiap object Menu dalam daftarMakanan (menu resto)
-                for (Menu menuMakanan : daftarMakanan) {
-                    // Mencari makanan orderMakanan dalam menu restoran
-                    if(menuMakanan.getNamaMakanan().trim().equalsIgnoreCase(orderMakanan)){
-                        orderedItems.add(menuMakanan);  // Masukan menuMakanan ke dalam orderedItems untuk object Order
-                        menuAvailable = true;
-                        break;
-                    }
-                }
-
-                if(!menuAvailable){
-                    System.out.println("Mohon memesan menu yang tersedia di Restoran!\n");
-                    break;
-                }
+            List<String> listMenuPesananRequest = new ArrayList<>();
+            for(int i=0; i < jumlahPesanan; i++){
+                listMenuPesananRequest.add(input.nextLine().trim());
             }
-
-            if (!menuAvailable){
+            if(!validateRequestPesanan(restaurant, listMenuPesananRequest)){
+                System.out.println("Mohon memesan menu yang tersedia di Restoran!");
                 continue;
-            }
-
-            isValid = true;
+            };
+            Order order = new Order(
+                    OrderGenerator.generateOrderID(restaurantName, tanggalPemesanan, validUser.getNomorTelepon()),
+                    tanggalPemesanan, 
+                    OrderGenerator.calculateDeliveryCost(validUser.getLokasi()), 
+                    restaurant, 
+                    MainMenu.getMenuRequest(restaurant, listMenuPesananRequest));
+            System.out.printf("Pesanan dengan ID %s diterima!", order.getOrderId());
+            System.out.println();
+            validUser.addOrderHistory(order);
+            return;
         }
 
-        // Ambil orderID dengan method generateOrderID dari kelas OrderGenerator
-        String orderID = OrderGenerator.generateOrderID(rightRestaurant.getNama().toUpperCase(), tanggalOrder, validUser.getNomorTelepon());
-        // hitung biayaOngkosKirim dengan method calculateDeliveryCost dari kelas OrderGenerator
-        int biayaOngkosKirim = OrderGenerator.calculateDeliveryCost(validUser.getLokasi());
-        
-        // Buat object order baru
-        Order validOrder = new Order(orderID, tanggalOrder, biayaOngkosKirim, rightRestaurant, false, null);
-        validOrder.setItems(orderedItems);  // Set nilai orderedItems
-        ArrayList<Order> orderHistory = validUser.getOrderHistory();
-        orderHistory.add(validOrder);   // Menambahkan object Order ke dalam arrayList
-        validUser.setOrderHistory(orderHistory);    // Set orderHistory 
-        System.out.println("Pesanan dengan ID " + orderID + " diterima!\n");
     }
 
     public static void handleCetakBill(User validUser){
@@ -365,7 +316,7 @@ public class MainMenu {
             }
         }
         // Membuat object Restaurant baru
-        Restaurant newResto = new Restaurant(nama);
+        Restaurant newResto = new Restaurant(nama, null, 0);
         restoList.add(newResto);    // Tambah resto baru ke restoList
         System.out.println("Restaurant "  + nama + " berhasil terdaftar.");
     }   
@@ -447,4 +398,23 @@ public class MainMenu {
         System.out.println("--------------------------------------------");
         System.out.print("Pilihan menu: ");
     }
+
+    public static Menu[] getMenuRequest(Restaurant restaurant, List<String> listMenuPesananRequest){
+        Menu[] menu = new Menu[listMenuPesananRequest.size()];
+        for(int i=0;i<menu.length;i++){
+            for(Menu existMenu : restaurant.getMenu()){
+                if(existMenu.getNamaMakanan().equals(listMenuPesananRequest.get(i))){
+                    menu[i] = existMenu;
+                }
+            }
+        }
+        return menu;
+    }
+
+    public static boolean validateRequestPesanan(Restaurant restaurant, List<String> listMenuPesananRequest){
+        return listMenuPesananRequest.stream().allMatch(pesanan -> 
+            restaurant.getMenu().stream().anyMatch(menu -> menu.getNamaMakanan().equals(pesanan))
+        );
+    }
+
 }

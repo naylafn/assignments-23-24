@@ -10,7 +10,6 @@ import assignments.assignment3.User;
 import assignments.assignment3.MainMenu;
 
 public class AdminSystemCLI extends UserSystemCLI{
-    private static ArrayList<Restaurant> restoList = MainMenu.getRestoList();
     private Scanner input = new Scanner(System.in);
 
     @Override
@@ -36,11 +35,13 @@ public class AdminSystemCLI extends UserSystemCLI{
     }
 
     protected void handleTambahRestoran(){
+        ArrayList<Restaurant> restoList = MainMenu.getRestoList();
         System.out.println("--------------Tambah Restoran---------------");
         Restaurant restaurant = null;
         String namaRestaurant = "";
         boolean isValid = true;
         while (restaurant == null || !isValid) {
+            restaurant = null;
             namaRestaurant = "";
             System.out.print("Masukkan nama restoran: ");
             namaRestaurant = input.nextLine().trim();
@@ -48,23 +49,31 @@ public class AdminSystemCLI extends UserSystemCLI{
                 for (Restaurant restaurantInList : restoList) {
                     if(namaRestaurant.equalsIgnoreCase(restaurantInList.getNama())){
                         isValid = false;
-                        System.out.println("Restoran dengan nama " + namaRestaurant + " sudah pernah terdaftar. Mohon masukkan nama yang berbeda");
-                        break;
+                        System.out.println("Restoran dengan nama " + namaRestaurant + " sudah pernah terdaftar.\n");
+                        continue;
                     }
+                }
+                if(!isValid){
+                    break;
                 }
             } 
             if(namaRestaurant.length()<4){
                 isValid = false;
                 System.out.println("Nama Restoran tidak valid! Minimal 4 karakter diperlukan.");
             }
+            if(isValid){
+                restaurant = new Restaurant(namaRestaurant, null, 0);
+                restaurant = MainMenu.handleTambahMenuRestaurant(restaurant);
+                if(restaurant != null) {
+                    restoList.add(restaurant);
+                    System.out.print("Restaurant "+ namaRestaurant +" Berhasil terdaftar.\n" );                    
+                }
+            }
         }
-        restaurant = new Restaurant(namaRestaurant);
-        restaurant = MainMenu.handleTambahMenuRestaurant(restaurant);
-        restoList.add(restaurant);
-        System.out.print("Restaurant "+restaurant.getNama()+" Berhasil terdaftar.\n" );
     }
 
     protected void handleHapusRestoran(){
+        ArrayList<Restaurant> restoList = MainMenu.getRestoList();
         boolean isValid = false;
         while(!isValid){
             System.out.println("\n---------Hapus Restoran---------");

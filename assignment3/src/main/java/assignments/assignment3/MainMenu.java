@@ -8,8 +8,6 @@ import java.util.Scanner;
 
 // import assignments.assignment2.OrderGenerator;
 import assignments.assignment2.*;
-import assignments.assignment3.User;
-import assignments.assignment3.LoginManager;
 import assignments.assignment3.payment.CreditCardPayment;
 import assignments.assignment3.payment.DebitPayment;
 import assignments.assignment3.systemCLI.AdminSystemCLI;
@@ -56,6 +54,7 @@ public class MainMenu {
             switch (choice) {
                 case 1 -> login();
                 case 2 -> exit = true;
+                case 3 -> cekOrderUsers();
                 default -> System.out.println("Pilihan tidak valid, silakan coba lagi.");
             }
         }
@@ -66,16 +65,17 @@ public class MainMenu {
     private void login(){
         String nama;
         String noTelp;
+        userLoggedIn = null;
         initUser();
         do{
-            System.out.println("\nSilakan Login:");
+            System.out.println("\nSilakan Login: ");
             System.out.print("Nama: ");
             nama = input.nextLine();
             System.out.print("Nomor Telepon: ");
             noTelp = input.nextLine();
 
             if(!OrderGenerator.validatePhoneNumber(noTelp)){
-                System.out.println("Nomor telepon tidak valid. Mohon masukkan nomor telepon dengan benar.");
+                System.out.println("Nomor telepon tidak valid. Mohon masukkan nomor telepon dengan benar.\n");
                 continue;
             }
 
@@ -85,7 +85,6 @@ public class MainMenu {
             if((user.getNama().trim()).equalsIgnoreCase(nama.trim()) && (user.getNomorTelepon().trim()).equals(noTelp.trim())){
                 userLoggedIn = user;
                 System.out.println("Selamat Datang " + userLoggedIn.getNama() + "!\n");
-                System.out.println("YANG BENER AJA LUH");
                 break;
             }
         }
@@ -97,6 +96,15 @@ public class MainMenu {
 
         UserSystemCLI system = loginManager.getSystem(userLoggedIn.role);
         system.run();
+    }
+
+    public void cekOrderUsers(){
+        for (User user : userList) {
+            System.out.println(user.getNama());
+            for (Order order : user.getOrderHistory()) {
+                System.out.println("Order: " + order.getOrderId());
+            }
+        }
     }
 
     private static void printHeader(){
@@ -124,12 +132,12 @@ public class MainMenu {
 
         userList.add(new User("Thomas N", "9928765403", "thomas.n@gmail.com", "P", "Customer", new DebitPayment(), 500000));
         userList.add(new User("Sekar Andita", "089877658190", "dita.sekar@gmail.com", "B", "Customer", new CreditCardPayment(), 2000000));
-        userList.add(new User("Sofita Yasusa", "084789607222", "sofita.susa@gmail.com", "T", "Customer", new DebitPayment(), 750000));
-        userList.add(new User("Dekdepe G", "080811236789", "ddp2.gampang@gmail.com", "S", "Customer", new CreditCardPayment(), 1800000));
-        userList.add(new User("Aurora Anum", "087788129043", "a.anum@gmail.com", "U", "Customer", new DebitPayment(), 650000));
+        // userList.add(new User("Sofita Yasusa", "084789607222", "sofita.susa@gmail.com", "T", "Customer", new DebitPayment(), 750000));
+        // userList.add(new User("Dekdepe G", "080811236789", "ddp2.gampang@gmail.com", "S", "Customer", new CreditCardPayment(), 1800000));
+        // userList.add(new User("Aurora Anum", "087788129043", "a.anum@gmail.com", "U", "Customer", new DebitPayment(), 650000));
 
         userList.add(new User("Admin", "123456789", "admin@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
-        userList.add(new User("Admin Baik", "9123912308", "admin.b@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
+        // userList.add(new User("Admin Baik", "9123912308", "admin.b@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
     }
 
     // Methods from MainMenu assignment2 (Solusi TP2)

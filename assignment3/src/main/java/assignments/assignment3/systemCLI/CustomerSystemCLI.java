@@ -11,8 +11,7 @@ import assignments.assignment3.payment.DepeFoodPaymentSystem;
 import assignments.assignment3.MainMenu;
 
 public class CustomerSystemCLI extends UserSystemCLI{
-    private static ArrayList<Restaurant> restoList = MainMenu.getRestoList();
-    private Scanner input = new Scanner(System.in);
+    Scanner input = new Scanner(System.in);
 
     @Override
     public boolean handleMenu(int choice){
@@ -46,13 +45,15 @@ public class CustomerSystemCLI extends UserSystemCLI{
 
     void handleBuatPesanan(){
         User userLoggedIn = MainMenu.getUserLoggedIn();
+        ArrayList<Restaurant> restoList = MainMenu.getRestoList();
+
         System.out.println("--------------Buat Pesanan----------------");
         while (true) {
             System.out.print("Nama Restoran: ");
             String restaurantName = input.nextLine().trim();
             Restaurant restaurant = null;
             for (Restaurant restaurantInList : restoList) {
-                if(restaurantName.equalsIgnoreCase(restaurantName)){
+                if(restaurantName.equalsIgnoreCase(restaurantInList.getNama().trim())){
                     restaurant = restaurantInList;
                 }
             }
@@ -74,12 +75,12 @@ public class CustomerSystemCLI extends UserSystemCLI{
             for(int i=0; i < jumlahPesanan; i++){
                 listMenuPesananRequest.add(input.nextLine().trim());
             }
-            if(! MainMenu.validateRequestPesanan(restaurant, listMenuPesananRequest)){
+            if(!MainMenu.validateRequestPesanan(restaurant, listMenuPesananRequest)){
                 System.out.println("Mohon memesan menu yang tersedia di Restoran!");
                 continue;
             };
             Order order = new Order(
-                    OrderGenerator.generateOrderID(restaurantName, tanggalPemesanan, userLoggedIn.getNomorTelepon()),
+                    OrderGenerator.generateOrderID(restaurantName.toUpperCase(), tanggalPemesanan, userLoggedIn.getNomorTelepon()),
                     tanggalPemesanan, 
                     OrderGenerator.calculateDeliveryCost(userLoggedIn.getLokasi()), 
                     restaurant, 
@@ -92,31 +93,34 @@ public class CustomerSystemCLI extends UserSystemCLI{
     }
 
     public static void handleCetakBill(){
-        ArrayList<User> userList = MainMenu.getUserList();
+        User userLoggedIn = MainMenu.getUserLoggedIn();
         Scanner input = new Scanner(System.in);
         System.out.println("--------------Cetak Bill----------------");
         while (true) {
             System.out.print("Masukkan Order ID: ");
             String orderId = input.nextLine().trim();
             Order order = null;
-            for (User user : userList) {
-                for (Order orderInList : user.getOrderHistory()) {
-                    if (order.getOrderId().equals(orderId)) {
-                        order = orderInList;
-                    }
+            for (Order orderInList : userLoggedIn.getOrderHistory()) {
+                if(orderId.equalsIgnoreCase(orderInList.getOrderId())){
+                    order = orderInList;
+                    break;
                 }
             }
+
             if(order == null){
                 System.out.println("Order ID tidak dapat ditemukan.\n");
                 continue;
             }
+
             System.out.println("");
             System.out.print(MainMenu.outputBillPesanan(order));
             return;
         }
     }
+    
 
     void handleLihatMenu(){
+        ArrayList<Restaurant> restoList = MainMenu.getRestoList();
         boolean isValid = false;
         Restaurant validResto = null;
         while(!isValid){
@@ -143,6 +147,7 @@ public class CustomerSystemCLI extends UserSystemCLI{
             menu += "\n" + index + ". " + item.getNamaMakanan() + " " + item.getHarga();
         }
         System.out.println("\nPesanan: " + menu);
+        System.out.println();
 
     }
 
@@ -150,18 +155,18 @@ public class CustomerSystemCLI extends UserSystemCLI{
         ArrayList<User> userList = MainMenu.getUserList();
         User userLoggedIn = MainMenu.getUserLoggedIn();
         DepeFoodPaymentSystem payment = userLoggedIn.getPayment();
-        String namaUser;
         Order validOrder = null;
-
         System.out.println("\n--------------Bayar Bill----------------");
         System.out.print("Masukkan order ID: ");
-        String inputOrderId = input.nextLine();
+        String inputOrderId = input.nextLine().toUpperCase().trim();
         for (User user : userList) {
-            for (Order order : user.getOrderHistory()) {
-                if(order.equals(inputOrderId)){
-                    validOrder = order;
-                    namaUser = user.getNama();
-                    break;
+            System.out.println("Order: " + (user.getOrderHistory()));
+            if(!(user.getOrderHistory()).isEmpty()){
+                for (Order order : (user.getOrderHistory())) {
+                    if((order.getOrderId()).equalsIgnoreCase(inputOrderId)){
+                        validOrder = order;
+                        break;
+                    }
                 }
             }
         }
@@ -183,13 +188,15 @@ public class CustomerSystemCLI extends UserSystemCLI{
             case 1:
                 if(payment instanceof CreditCardPayment){
                     payment = (CreditCardPayment) payment;
-                    payment.processPayment((long)validOrder.getTotalHarga(), validOrder);
+                    payment.processPayment((long)validOrder.getTotalHarga(), userLoggedIn, validOrder);
+                } else {
+                    System.out.println("User belum memiliki metode pembayaran ini!\n");
                 }
                 break;
             case 2:
                 if(payment instanceof DebitPayment){
                     payment = (DebitPayment) payment;
-                    payment.processPayment((long)validOrder.getTotalHarga(), validOrder);
+                    payment.processPayment((long)validOrder.getTotalHarga(), userLoggedIn, validOrder);
                 } else {
                     System.out.println("User belum memiliki metode pembayaran ini!\n");
                 }
