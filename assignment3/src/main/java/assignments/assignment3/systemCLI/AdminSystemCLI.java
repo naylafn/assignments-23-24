@@ -3,15 +3,13 @@ package assignments.assignment3.systemCLI;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import java.util.ArrayList;
-import java.util.Scanner;
 import assignments.assignment2.*;
-import assignments.assignment3.User;
 import assignments.assignment3.MainMenu;
 
 public class AdminSystemCLI extends UserSystemCLI{
     private Scanner input = new Scanner(System.in);
 
+    // Override method abstract dari Class Abstract (UserSystemCLI)
     @Override
     public boolean handleMenu(int command){
         switch(command){
@@ -22,7 +20,8 @@ public class AdminSystemCLI extends UserSystemCLI{
         }
         return true;
     }
-
+    
+    // Override method abstract dari Class Abstract (UserSystemCLI)
     @Override
     public void displayMenu() {
         System.out.println("\n--------------------------------------------");
@@ -34,6 +33,7 @@ public class AdminSystemCLI extends UserSystemCLI{
         System.out.print("Pilihan menu: ");
     }
 
+    // Method diambil dari TP2 dan Solusi TP2
     protected void handleTambahRestoran(){
         ArrayList<Restaurant> restoList = MainMenu.getRestoList();
         System.out.println("--------------Tambah Restoran---------------");

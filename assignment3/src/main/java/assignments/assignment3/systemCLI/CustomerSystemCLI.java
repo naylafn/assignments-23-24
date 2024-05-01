@@ -13,6 +13,7 @@ import assignments.assignment3.MainMenu;
 public class CustomerSystemCLI extends UserSystemCLI{
     Scanner input = new Scanner(System.in);
 
+    // Override method abstract dari Class Abstract (UserSystemCLI)
     @Override
     public boolean handleMenu(int choice){
         switch(choice){
@@ -29,6 +30,7 @@ public class CustomerSystemCLI extends UserSystemCLI{
         return true;
     }
 
+    // Override method abstract dari Class Abstract (UserSystemCLI)
     @Override
     public void displayMenu() {
         System.out.println("\n--------------------------------------------");
@@ -43,7 +45,8 @@ public class CustomerSystemCLI extends UserSystemCLI{
         System.out.print("Pilihan menu: ");
     }
 
-    void handleBuatPesanan(){
+    // Method yang digunakan beberapa diambil dari TP2 dan Solusi TP2
+    private void handleBuatPesanan(){
         User userLoggedIn = MainMenu.getUserLoggedIn();
         ArrayList<Restaurant> restoList = MainMenu.getRestoList();
 
@@ -92,7 +95,7 @@ public class CustomerSystemCLI extends UserSystemCLI{
         }
     }
 
-    public static void handleCetakBill(){
+    private static void handleCetakBill(){
         User userLoggedIn = MainMenu.getUserLoggedIn();
         Scanner input = new Scanner(System.in);
         System.out.println("--------------Cetak Bill----------------");
@@ -119,7 +122,7 @@ public class CustomerSystemCLI extends UserSystemCLI{
     }
     
 
-    void handleLihatMenu(){
+    private void handleLihatMenu(){
         ArrayList<Restaurant> restoList = MainMenu.getRestoList();
         boolean isValid = false;
         Restaurant validResto = null;
@@ -151,7 +154,7 @@ public class CustomerSystemCLI extends UserSystemCLI{
 
     }
 
-    void handleBayarBill(){
+    private void handleBayarBill(){
         ArrayList<User> userList = MainMenu.getUserList();
         User userLoggedIn = MainMenu.getUserLoggedIn();
         DepeFoodPaymentSystem payment = userLoggedIn.getPayment();
@@ -207,7 +210,8 @@ public class CustomerSystemCLI extends UserSystemCLI{
         }
     }
 
-    void handleCekSaldo(){
+    // Menganmbil atribut saldo milik user
+    private void handleCekSaldo(){
         User userLoggedIn = MainMenu.getUserLoggedIn();
         System.out.println("Sisa saldo sebesar: Rp " + userLoggedIn.getSaldo());
     }

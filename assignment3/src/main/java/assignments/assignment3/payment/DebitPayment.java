@@ -8,7 +8,7 @@ public class DebitPayment implements DepeFoodPaymentSystem{
 
     @Override
     public void processPayment(long amount, User user, Order order) {
-        System.out.println("EMANG KOSONG? " + (user == null));
+        // Validasi saldo user
         if(amount<MINIMUM_TOTAL_PRICE){
             System.out.println("Jumlah pesanan < 50000 mohon menggunakan metode pembayaran yang lain\n");
             return;
