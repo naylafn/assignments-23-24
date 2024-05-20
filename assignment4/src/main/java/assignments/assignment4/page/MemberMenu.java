@@ -6,7 +6,7 @@ import javafx.scene.control.Alert;
 public abstract class MemberMenu {
     private Scene scene;
 
-    abstract protected Scene createBaseMenu();
+    public abstract Scene createBaseMenu();
 
     protected void showAlert(String title, String header, String content, Alert.AlertType c){
         Alert alert = new Alert(c);

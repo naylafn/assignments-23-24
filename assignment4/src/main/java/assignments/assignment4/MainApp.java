@@ -1,5 +1,8 @@
 package assignments.assignment4;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.text.NumberFormat.Style;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +13,13 @@ import assignments.assignment4.page.AdminMenu;
 import assignments.assignment4.page.CustomerMenu;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
@@ -18,6 +28,34 @@ public class MainApp extends Application {
     private Map<String, Scene> allScenes = new HashMap<>();
     private Scene currentScene;
     private static User user;
+    private Scene previousScene; // Track the previous scene
+
+    public static Font primaryFont = Font.font("Century Gothic", 15);
+    public static Font boldPrimary = Font.font("Century Gothic", FontWeight.BOLD, 20);
+    public static Font bold = Font.font("Century Gothic", FontWeight.BOLD, 15);
+    public static Font headerFont = Font.font("Lucida Calligraphy", FontWeight.BOLD, 25);
+    public static String fontColor = "-fx-text-fill: #595758;";
+    
+    public static final Background bgStyle = new Background(new BackgroundFill(Color.web("#FFEEF2"), null, null));
+    public static final String buttonStyle = fontColor +
+        "-fx-background-color: linear-gradient(#FFE4F3, #FFD7EB); " +
+        "-fx-border-color: #FFE4F3; " +
+        "-fx-border-radius: 8px; " +
+        "-fx-background-radius: 8px; " +
+        "-fx-font-size: 13px; " +
+        "-fx-font-weight: bold;" +
+        "-fx-font-family: 'Century Gothic';";
+
+    public static final String textfieldStyle = fontColor +
+    "-fx-background-color: linear-gradient(#F8F7FF, #FFFFFF);" +
+    "-fx-border-color: #FFE4F3;" +
+    "-fx-border-radius: 8px;" +
+    "-fx-background-radius: 8px;" +
+    "-fx-font-size: 13px;" +
+    "-fx-font-weight: bold;" +
+    "-fx-font-family: 'Century Gothic';" +
+    "-fx-prompt-text-fill: #B0B0B0;";
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -51,6 +89,14 @@ public class MainApp extends Application {
         return allScenes.get(sceneName);
     }
 
+    public Scene getPreviousScene() {
+        return previousScene;
+    }
+
+    public void setPreviousScene(Scene scene) {
+        this.previousScene = scene;
+    }
+
     public void addScene(String sceneName, Scene scene){
         allScenes.put(sceneName, scene);
     }
@@ -62,5 +108,23 @@ public class MainApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static void showSuccessMessage(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    public static void displayErrorMessage(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+    
+        // Show and wait for the user to close the dialog
+        alert.showAndWait();
     }
 }
