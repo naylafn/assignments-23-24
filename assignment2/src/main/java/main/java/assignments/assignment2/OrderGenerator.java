@@ -1,4 +1,5 @@
-package assignments.assignment1;
+package main.java.assignments.assignment2;
+
 import java.util.Scanner;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -7,15 +8,6 @@ public class OrderGenerator {
     private static final Scanner input = new Scanner(System.in);
     private static final int ORDER_ID_LENGTH = 16;
 
-    /*
-     * Anda boleh membuat method baru sesuai kebutuhan Anda
-     * Namun, Anda tidak boleh menghapus ataupun memodifikasi return type method
-     * yang sudah ada.
-     */
-
-    /*
-     * Method ini untuk menampilkan DepeFood
-     */
     public static void initMenu() {
         System.out.println(">>=======================================<<");
         System.out.println("|| ___                 ___             _ ||");
@@ -27,9 +19,6 @@ public class OrderGenerator {
         System.out.println();
     }
 
-    /*
-     * Method ini untuk menampilkan menu
-     */
     public static void showMenu() {
         System.out.println("Pilih menu:");
         System.err.println("1. Generate Order ID");
@@ -37,12 +26,6 @@ public class OrderGenerator {
         System.out.println("3. Keluar");
     }
 
-    /*
-     * Method ini digunakan untuk membuat ID
-     * dari nama restoran, tanggal order, dan nomor telepon
-     *
-     * @return String Order ID dengan format sesuai pada dokumen soal
-     */
     public static String generateOrderID(String namaRestoran, String tanggalOrder, String noTelepon) {
 
         String restaurantCode = getRestaurantCode(namaRestoran);
@@ -50,23 +33,11 @@ public class OrderGenerator {
         String phoneNumberChecksum = getPhoneNumberChecksum(noTelepon);
 
         String id = restaurantCode + formattedDate + phoneNumberChecksum;
-        id = id.toUpperCase();
         String checksum = calculateChecksum(id);
 
         return id + checksum;
     }
 
-    /*
-     * Method ini digunakan untuk membuat bill
-     * dari order id dan lokasi
-     *
-     * @return String Bill dengan format sesuai di bawah:
-     * Bill:
-     * Order ID: [Order ID]
-     * Tanggal Pemesanan: [Tanggal Pemesanan]
-     * Lokasi Pengiriman: [Kode Lokasi]
-     * Biaya Ongkos Kirim: [Total Ongkos Kirim]
-     */
     public static String generateBill(String OrderID, String lokasi) {
         String formattedDate = OrderID.substring(4, 12);
         String tanggalPemesanan = formattedDate.substring(0, 2) + "/" + formattedDate.substring(2, 4) + "/"

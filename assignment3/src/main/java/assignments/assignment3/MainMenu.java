@@ -1,6 +1,9 @@
 package assignments.assignment3;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.ArrayList;
+import java.text.*;
 import java.util.Scanner;
 
 import assignments.assignment3.payment.CreditCardPayment;
@@ -93,7 +96,7 @@ public class MainMenu {
         System.out.println("||| . \\ ___  ___  ___ | __>___  ___  _| |||");
         System.out.println("||| | |/ ._>| . \\/ ._>| _>/ . \\/ . \\/ . |||");
         System.out.println("|||___/\\___.|  _/\\___.|_| \\___/\\___/\\___|||");
-        System.out.println("||          |_|                          ||");
+        System.out.println("||           |_|                          ||");
         System.out.println(">>=======================================<<");
     }
 

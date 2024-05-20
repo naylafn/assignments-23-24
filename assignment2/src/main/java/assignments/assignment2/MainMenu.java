@@ -19,6 +19,8 @@ public class MainMenu {
         restoList = new ArrayList<>();
         initUser();
         boolean programRunning = true;
+        initUser();
+
         while(programRunning){
             printHeader();
             startMenu();
@@ -45,10 +47,10 @@ public class MainMenu {
                         input.nextLine();
 
                         switch(commandCust){
-                            case 1 -> handleBuatPesanan();
-                            case 2 -> handleCetakBill();
+                            case 1 -> handleBuatPesanan(userLoggedIn);
+                            case 2 -> handleCetakBill(userLoggedIn);
                             case 3 -> handleLihatMenu();
-                            case 4 -> handleUpdateStatusPesanan();
+                            case 4 -> handleUpdateStatusPesanan(userLoggedIn);
                             case 5 -> isLoggedIn = false;
                             default -> System.out.println("Perintah tidak diketahui, silakan coba kembali");
                         }
@@ -88,7 +90,7 @@ public class MainMenu {
         return null;
     }
 
-    public static void handleBuatPesanan(){
+    public static void handleBuatPesanan(User userLoggedIn2){
         System.out.println("--------------Buat Pesanan----------------");
         while (true) {
             System.out.print("Nama Restoran: ");
@@ -194,7 +196,7 @@ public class MainMenu {
         return null;
     }
 
-    public static void handleCetakBill(){
+    public static void handleCetakBill(User userLoggedIn2){
         System.out.println("--------------Cetak Bill----------------");
         while (true) {
             System.out.print("Masukkan Order ID: ");
@@ -237,7 +239,7 @@ public class MainMenu {
         }
     }
 
-    public static void handleUpdateStatusPesanan(){
+    public static void handleUpdateStatusPesanan(User userLoggedIn2){
         System.out.println("--------------Update Status Pesanan---------------");
         while (true) {
             System.out.print("Order ID: ");
@@ -403,4 +405,5 @@ public class MainMenu {
         System.out.println("--------------------------------------------");
         System.out.print("Pilihan menu: ");
     }
+
 }
